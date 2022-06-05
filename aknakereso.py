@@ -37,7 +37,7 @@ class JatekTabla:
     def szomszedosaknakszamanakvisszaadasa(self, sor, oszlop):
         #itt végig iterálunk az összes szomszédos mezőn, hogy megkapjuk az aknák számát
         szomszedosaknak=0
-        for s in range(max(0, sor-1), min(self.palyameret-1, sor+1)+1): #végig iterálok az összes soros
+        for s in range(max(0, sor-1), min(self.palyameret-1, sor+1)+1): #végig iterálok az összes soron
             for o in range(max(0, oszlop-1), min(self.palyameret-1, oszlop+1)+1): #végig iterálok az összes oszlopon
                 if s==sor and o==oszlop:
                     continue #az eredeti pozíciónk, ne vizsgálja
@@ -45,6 +45,72 @@ class JatekTabla:
                     szomszedosaknak+=1
         return szomszedosaknak
     
+    def asas(self, sor, oszlop):
+        
+        #ásson a megadott sor és oszlop koordinátán
+        #ha sikeres az ásás, True-t adunk vissza, ha viszont akna, akkor False-ot
+        #ha van szomszédos akna, akkor befejezzük az ásást, ha nincs, akkor kiássuk az üres mezőket körülötte, mint a játékban
+        
+        self.asas.add((sor, oszlop)) #gyakorlatilag nyilvántartjuk az ásásokat itt
+        if self.jatektabla[sor][oszlop]=="x":
+            return False #aknát ástunk
+        elif self.jatektabla[sor][oszlop]>0:
+            return True #nem aknát ástunk
+        for s in range(max(0, sor-1), min(self.palyameret-1, sor+1)+1): 
+            for o in range(max(0, oszlop-1), min(self.palyameret-1, oszlop+1)+1):
+                if (s, o) in self.asas:
+                    continue #ne ásson ott, ahol már történt ásás, ezeket a koordinátákat ugye a self.asas tartalmazza
+    
+                self.asas(s,o)
+        return True
+    
+    def __str__(self):
+        #ezzel a függvénnyel, ha meghívom a printet ebben az objektumban, kifogja printelni azt,
+        #amit ez a függvény visszaad, tehát, vissza kell adni egy stringet, ami a pályát tartalmazza
+        #a játékos számára
+        
+        #egy tömb ami megmutatja amit a játékos látni szeretne(fog)
+        lathatopalya=[[None for _ in range(self.palyameret)] for _ in range(self.palyameret)]
+        for sor in range(self.palyameret):
+            for oszlop in range(self.palyameret):
+                if (sor,oszlop) in self.asas:
+                    lathatopalya[sor][oszlop]=str(self.jatektabla[sor][oszlop])#átalakítjuk a mezőt stringé, hogy majd kitudjuk printelni
+                else:
+                    lathatopalya[sor][oszlop]=" "
+        #az egészet stringbe kell rakni, formázzuk meg a pályát
+        stringvissza=''
+        #kellenek a maximum szélességek a printeléshez
+        szelessegek=[]
+        for idx in range(self.palyameret):
+            oszlopok=map(lambda x:[idx], lathatopalya)
+            szelessegek.append(len(max(oszlopok, key=len)))
+        
+        #kiprinteljük a csv stringet
+        indexek=[i for i in range(self.palyameret)]
+        indexeksor="   "
+        mezok=[]
+        for idx, oszlop in enumerate(indexek):
+            format="%-"+str(szelessegek[idx])+"s"
+            mezok.append(format%(oszlop))
+        indexeksor+="  ".join(mezok)
+        indexeksor+="  \n"
+        
+        for i in range(len(lathatopalya)):
+            sor=lathatopalya[i]
+            stringvissza+=f'{i} I'
+            mezok=[]
+            for idx, oszlop in enumerate(sor):
+                format='%-'+str(szelessegek[idx])+"s"
+                mezok.append(format%(oszlop))
+            stringvissza+=" I".join(mezok)
+            stringvissza+=" I\n"
+        
+        stringhosszusag=int(len(stringvissza)/self.palyameret)
+        stringvissza=indexeksor+"-"*stringhosszusag+"\n"+stringvissza+"-"*stringhosszusag
+        return stringvissza
             
 def jatek(palyameret=10, aknaszam=10):
+    jatektabla=JatekTabla(palyameret, aknaszam) #meghívom a táblát
     pass
+
+#További feladatok a commit leírásban

@@ -98,14 +98,14 @@ class JatekTabla:
         
         for i in range(len(lathatopalya)):
             sor=lathatopalya[i]
-            stringvissza+=f'{i} |'
+            stringvissza+=f'{i} /'
             mezok=[]
             for idx, oszlop in enumerate(sor):
                 format='%-'+str(szelessegek[idx])+"s"
                 mezok.append(format%(oszlop))
             stringvissza+=" /".join(mezok)
             stringvissza+=" /\n"
-    
+        
         stringhosszusag=int(len(stringvissza)/self.palyameret)
         stringvissza=indexeksor+"-"*stringhosszusag+"\n"+stringvissza+"-"*stringhosszusag
         return stringvissza

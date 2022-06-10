@@ -119,7 +119,7 @@ def jatek(palyameret=10, aknaszam=10):
     while len(jatektabla.asas) < jatektabla.palyameret ** 2 - aknaszam:
         print(jatektabla)
         # jó a 0,0 és a 0, 0 meg a 0,     0
-        felh_input = re.split(',(\\s)*', input("Hol szeretne ásni? Irja be a sor és oszlopot! ")) # 1, 2
+        felh_input = re.split(',(\\s)*', input("Hol szeretne ásni? Írja be a sor és oszlopot! ")) # 1, 2
         sor , oszlop = int(felh_input[0]), int(felh_input[-1])
         if sor < 0  or sor >= jatektabla.palyameret or oszlop < 0 or oszlop >= palyameret:
             print("Rossz a hely! Írd be újra! ")

@@ -33,7 +33,7 @@ class JatekTabla:
             for o in range(self.palyameret): #végig iterálok az oszlopokon
                 if self.jatektabla[s][o]=="x":
                     continue #ha a mező alapból egy bomba, nem szeretnék semmit kezdeni vele
-                self.jatektabla[s][o]=self.szomszedosaknakszamanakvisszaadasa(s,o)
+                self.jatektabla[s][o]=self.             szomszedosaknakszamanakvisszaadasa(s,o)
     
     def szomszedosaknakszamanakvisszaadasa(self, sor, oszlop):
         #itt végig iterálunk az összes szomszédos mezőn, hogy megkapjuk az aknák számát

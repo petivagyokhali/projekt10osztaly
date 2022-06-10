@@ -1,4 +1,5 @@
 import random
+import re
 #játéktábla osztály a pálya létrehozásához
 class JatekTabla:
     def __init__(self, palyameret, aknaszam):
@@ -41,11 +42,11 @@ class JatekTabla:
             for o in range(max(0, oszlop-1), min(self.palyameret-1, oszlop+1)+1): #végig iterálok az összes oszlopon
                 if s==sor and o==oszlop:
                     continue #az eredeti pozíciónk, ne vizsgálja
-                if self.palyameret[s][o]=="x":
+                if self.jatektabla[s][o]=="x":
                     szomszedosaknak+=1
         return szomszedosaknak
     
-    def asas(self, sor, oszlop):
+    def aso(self, sor, oszlop):
         
         #ásson a megadott sor és oszlop koordinátán
         #ha sikeres az ásás, True-t adunk vissza, ha viszont akna, akkor False-ot
@@ -61,7 +62,7 @@ class JatekTabla:
                 if (s, o) in self.asas:
                     continue #ne ásson ott, ahol már történt ásás, ezeket a koordinátákat ugye a self.asas tartalmazza
     
-                self.asas(s,o)
+                self.aso(s,o)
         return True
     
     def __str__(self):
@@ -97,20 +98,43 @@ class JatekTabla:
         
         for i in range(len(lathatopalya)):
             sor=lathatopalya[i]
-            stringvissza+=f'{i} I'
+            stringvissza+=f'{i} |'
             mezok=[]
             for idx, oszlop in enumerate(sor):
                 format='%-'+str(szelessegek[idx])+"s"
                 mezok.append(format%(oszlop))
-            stringvissza+=" I".join(mezok)
-            stringvissza+=" I\n"
-        
+            stringvissza+=" /".join(mezok)
+            stringvissza+=" /\n"
+    
         stringhosszusag=int(len(stringvissza)/self.palyameret)
         stringvissza=indexeksor+"-"*stringhosszusag+"\n"+stringvissza+"-"*stringhosszusag
         return stringvissza
             
 def jatek(palyameret=10, aknaszam=10):
-    jatektabla=JatekTabla(palyameret, aknaszam) #meghívom a táblát
-    pass
-
 #További feladatok a commit leírásban
+    # első lépés: megycsinálni és megtervezni a bombákat
+    jatektabla=JatekTabla(palyameret, aknaszam) #meghívom a táblát
+    
+    biztonsag=True
+    while len(jatektabla.asas) < jatektabla.palyameret ** 2 - aknaszam:
+        print(jatektabla)
+        # jó a 0,0 és a 0, 0 meg a 0,     0
+        felh_input = re.split(',(\\s)*', input("Hol szeretne ásni? Irja be a sor és oszlopot! ")) # 1, 2
+        sor , oszlop = int(felh_input[0]), int(felh_input[-1])
+        if sor < 0  or sor >= jatektabla.palyameret or oszlop < 0 or oszlop >= palyameret:
+            print("Rossz a hely! Írd be újra! ")
+            continue
+
+        biztonsag = jatektabla.aso(sor, oszlop)
+        if not biztonsag:
+            break # game over
+    if biztonsag:
+        print("Gratulálok nyertél!")
+    else:
+        print("Vesztettél!")
+        jatektabla.asas = [(s,o) for s in range(jatektabla.palyameret) for o in range(jatektabla.palyameret)]
+        print(jatektabla)
+
+
+if __name__ == '__main__':
+    jatek() 

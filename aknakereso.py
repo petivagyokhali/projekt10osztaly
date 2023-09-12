@@ -6,7 +6,7 @@ class JatekTabla:
         self.palyameret=palyameret
         self.aknaszam=aknaszam
         self.jatektabla=self.ujpalyaletrehozasa()#az aknák lerakásához
-        self.ertekrendelesatobbimezohoz()
+        self.ertek_rendeles_a_tobbi_mezohoz()
         
         #a sor és oszlop adatokat ebben a halmazban mentjük
         self.asas=set() #ha például a 3. sorban és a 4. oszlopban ásunk, akkor:self.asas={(3,4)}
@@ -26,16 +26,16 @@ class JatekTabla:
             lerakottaknak+=1
         return jatektabla
     
-    def ertekrendelesatobbimezohoz(self):
+    def ertek_rendeles_a_tobbi_mezohoz(self):
         #itt rendeljük az értékeket a többi mezőhöz, amikkel megtudhatjuk hány szomszédos akna
         #van a közelben
         for s in range(self.palyameret): #végig iterálok a sorokon
             for o in range(self.palyameret): #végig iterálok az oszlopokon
                 if self.jatektabla[s][o]=="x":
                     continue #ha a mező alapból egy bomba, nem szeretnék semmit kezdeni vele
-                self.jatektabla[s][o]=self.             szomszedosaknakszamanakvisszaadasa(s,o)
+                self.jatektabla[s][o]=self.szomszedosaknak_szamanak_visszaadasa(s,o)
     
-    def szomszedosaknakszamanakvisszaadasa(self, sor, oszlop):
+    def szomszedosaknak_szamanak_visszaadasa(self, sor, oszlop):
         #itt végig iterálunk az összes szomszédos mezőn, hogy megkapjuk az aknák számát
         szomszedosaknak=0
         for s in range(max(0, sor-1), min(self.palyameret-1, sor+1)+1): #végig iterálok az összes soron
